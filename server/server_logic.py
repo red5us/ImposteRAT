@@ -85,7 +85,7 @@ def run_commands(clients):
                         print(client.recv(BUFFER_SIZE).decode())
                         break
     except Exception as e:
-        print("Error")
+        print("Error ", e)
 
 #Check IP
 def check_if_ip_exists(clients):
