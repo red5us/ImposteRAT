@@ -7,5 +7,5 @@ Install the following using pip:
  - Pillow
 
 ## Usage:
-Change the IP and Port number in the Client & Server according to your settings.\n
+Change the IP and Port number in the Client & Server according to your settings./n
 Run the Server.py and wait for connection from clients.
