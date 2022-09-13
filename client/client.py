@@ -108,7 +108,7 @@ while True:
     if(isConncted == False):
         try:
             client = socket(AF_INET, SOCK_STREAM)
-            client.connect(("10.100.102.19", 5555))
+            client.connect(("10.100.102.96", 5555))
             isConncted = True
             print("Conncted to Server!")
             start_client()  # Starts client
