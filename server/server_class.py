@@ -6,6 +6,7 @@ from gui import *
 #Class that handles all the server communication
 class Server_Class:
     def __init__(self):
+        createTempFolder()
         self.server = socket(AF_INET, SOCK_STREAM)# Define the server socket type
         self.server.bind(("", 5555))# Configure the server ip address and port
         self.server.listen(100)  # listien to max of 100 endpoints

