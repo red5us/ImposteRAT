@@ -11,6 +11,7 @@ def list_of_clients(clients):
     """Function the list all conncted clients on the server"""
     if (not clients):
         print("List of clients is empty")
+        time.sleep(1)
     else:
         check_if_still_conncted(clients) #Checks if client is still conncted to the server
         try:
@@ -49,6 +50,7 @@ def choose_command():
                 return commands[command]
             else:
                 print(str(command) + " Command Was not found")
+                time.sleep(1)
         except:
             print("Invalid Input")
 
@@ -79,6 +81,7 @@ def run_commands(clients):
                         #if not any of the above just the input from the server and wait for respond
                         client.sendall(command.encode()) 
                         print(client.recv(BUFFER_SIZE).decode())
+                        time.sleep(2)
     except Exception as e:
         print("Error ", e)
 
@@ -124,6 +127,7 @@ def screenshot(client, command):
             if bytes_read == b"11111111": #if the client sends 11111111 in bits, stop.
                 time.sleep(1)
                 print(f"Screenshot saved in: {filename}")
+                time.sleep(3)
                 break
             f.write(bytes_read)
 

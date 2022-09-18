@@ -1,4 +1,5 @@
 from socket import *
+from time import sleep
 from server_logic import *
 import threading as thread
 from gui import *
